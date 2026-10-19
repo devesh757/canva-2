@@ -1,0 +1,75 @@
+// Libre Studio — data model (SQLite via Prisma)
+// Honest scopes: demo auth (email -> signed cookie), server-owned designs, subscriptions.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  designs   Design[]
+  subscription Subscription?
+  usages    Usage[]
+
+  // BYO AI keys (server-stored so API routes can call providers)
+  openaiKey String?
+  nvidiaKey String?
+  aiProvider String @default("heuristic") // heuristic | openai | nvidia
+
+  // Contacts used by Stripe when configured
+  stripeCustomerId String?
+}
+
+model Design {
+  id        String   @id @default(cuid())
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name      String   @default("Untitled design")
+  sizeId    String   @default("custom")
+  width     Int      @default(1080)
+  height    Int      @default(1080)
+  thumb     String?  // small dataURL preview for dashboard
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pages     Page[]
+}
+
+model Page {
+  id         String  @id @default(cuid())
+  designId   String
+  design     Design  @relation(fields: [designId], references: [id], onDelete: Cascade)
+  idx        Int
+  background String  @default("#ffffff")
+  objects    Json    @default("[]")
+  @@unique([designId, idx])
+}
+
+model Subscription {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan               String   @default("FREE") // FREE | PRO | MAX
+  status             String   @default("ACTIVE") // ACTIVE | PAST_DUE | CANCELED | DEMO
+  stripeCustomerId   String?
+  stripeSubscription String?
+  currentPeriodEnd   DateTime?
+  updatedAt          DateTime @updatedAt
+}
+
+model Usage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      String   // AI_TEXT | AI_IMAGE
+  provider  String   @default("heuristic")
+  createdAt DateTime @default(now())
+  meta      Json?
+}

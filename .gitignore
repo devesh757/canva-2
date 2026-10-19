@@ -1,0 +1,8 @@
+NEXT.js / Libre Studio app
+node_modules/
+.next/
+prisma/dev.db
+prisma/dev.db-journal
+*.tsbuildinfo
+next-env.d.ts
+.env

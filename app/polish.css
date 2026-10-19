@@ -1,0 +1,205 @@
+/* ============================================================
+   Libre Studio · polish layer (Page 3 redesign)
+   Tokens live in globals.css; this file adds new surfaces and
+   micro-interactions for the Next.js app (dashboard, auth,
+   pricing, account, meters, skeletons).
+   ============================================================ */
+
+/* ---------- shared bits ---------- */
+.muted { color: var(--ink-3); }
+code {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, monospace;
+  font-size: 0.92em;
+  background: rgba(100, 52, 233, 0.08);
+  border: 1px solid rgba(100, 52, 233, 0.15);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+.plan-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), #8927d5);
+  border-radius: 999px;
+  padding: 4px 12px;
+  box-shadow: 0 4px 14px rgba(100, 52, 233, 0.35);
+}
+.plan-chip.big { font-size: 13px; padding: 6px 16px; }
+
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* shimmering skeleton */
+@keyframes ls-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  height: 150px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #efeafd 25%, #e4ddf7 45%, #efeafd 65%);
+  background-size: 800px 100%;
+  animation: ls-shimmer 1.4s linear infinite;
+  border: 1px solid var(--line);
+}
+
+/* primary button shine */
+.btn.primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--brand), #8927d5);
+  box-shadow: 0 6px 18px rgba(100, 52, 233, 0.32);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.btn.primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 48%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+.btn.primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(100, 52, 233, 0.42); }
+.btn.primary:hover::after { transform: translateX(120%); }
+
+/* usage meter */
+.meter {
+  height: 6px;
+  border-radius: 999px;
+  background: #e8e3f6;
+  overflow: hidden;
+  margin: 6px 0;
+}
+.meter > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand), #b34be0);
+  transition: width 0.4s ease;
+}
+.usage-meter {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(100, 52, 233, 0.05);
+  border: 1px solid rgba(100, 52, 233, 0.12);
+  border-radius: 12px;
+}
+
+/* ---------- login ---------- */
+.login-veil {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(700px 320px at 15% 10%, rgba(100, 52, 233, 0.14), transparent 60%),
+    radial-gradient(700px 380px at 85% 90%, rgba(233, 78, 119, 0.10), transparent 60%);
+}
+.login-card {
+  width: min(400px, calc(100vw - 40px));
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 34px 30px 26px;
+  box-shadow: 0 24px 70px rgba(36, 20, 84, 0.14);
+}
+.login-card h1 { font-size: 24px; margin: 0 0 6px; }
+.login-card .input { height: 44px; font-size: 15px; }
+
+/* ---------- generic page wrapper ---------- */
+.page-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 22px 26px 60px;
+}
+.page-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 20px;
+}
+.page-wrap h1 { font-size: 30px; margin: 6px 0 4px; letter-spacing: -0.02em; }
+
+/* ---------- pricing ---------- */
+.pricing-hero { text-align: center; padding: 22px 0 26px; }
+.pricing-hero h1 { font-size: 38px; }
+.pricing-hero p { max-width: 640px; margin: 6px auto 0; color: var(--ink-3); font-size: 14.5px; }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+  margin: 12px 0 26px;
+}
+.price-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.price-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(36, 20, 84, 0.10); }
+.price-card.featured {
+  border: 2px solid var(--brand);
+  box-shadow: 0 20px 50px rgba(100, 52, 233, 0.16);
+}
+.price-card.current { outline: 2px solid rgba(100, 52, 233, 0.35); outline-offset: 2px; }
+.price-card .badge {
+  position: absolute;
+  top: -11px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), #8927d5);
+  padding: 4px 12px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(100, 52, 233, 0.4);
+}
+.price-card h3 { font-size: 19px; margin: 2px 0 8px; }
+.price-card .price { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
+.price-card .price span { font-size: 15px; font-weight: 600; color: var(--ink-3); }
+.price-card .tag { color: var(--ink-3); font-size: 13.5px; margin: 10px 0 14px; }
+.price-card ul { list-style: none; margin: 0 0 18px; padding: 0; flex: 1; }
+.price-card li { padding: 5px 0; font-size: 13.5px; color: var(--ink-2); }
+.price-card li::before { content: '✓ '; color: var(--brand); font-weight: 800; }
+
+/* ---------- account ---------- */
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(36, 20, 84, 0.04);
+}
+.card h3 { margin: 0 0 10px; font-size: 16px; }
+.quota-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+.quota-item b { font-size: 13px; }
+.status-list { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-2); }
+.status-list li { padding: 3px 0; }
+
+/* ---------- responsive editor chrome nits ---------- */
+@media (max-width: 720px) {
+  .pricing-hero h1 { font-size: 30px; }
+  .quota-grid { grid-template-columns: 1fr; }
+}
